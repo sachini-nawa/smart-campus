@@ -1,14 +1,15 @@
 package com.smartcampus.backend.entity;
 
+import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@Document(collection = "resources")
+@Entity
+@Table(name = "resources")
 public class Resource {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
