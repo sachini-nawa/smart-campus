@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 import org.springframework.util.StringUtils;
-
+//
 @Configuration
 public class MongoConfig {
     @Value("${spring.data.mongodb.uri:${MONGODB_URI:}}")
