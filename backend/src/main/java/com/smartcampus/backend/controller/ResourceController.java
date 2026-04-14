@@ -18,35 +18,40 @@ public class ResourceController {
 
     private final ResourceService resourceService;
 
+    // POST: Add a new resource
     @PostMapping
     public ResponseEntity<Resource> createResource(@RequestBody Resource resource) {
         Resource savedResource = resourceService.saveResource(resource);
         return new ResponseEntity<>(savedResource, HttpStatus.CREATED);
     }
 
+    // GET: Retrieve a single resource by ID
     @GetMapping("/{id}")
     public ResponseEntity<Resource> getResourceById(@PathVariable Long id) {
-    return resourceService.getResourceById(id)
-        .map(ResponseEntity::ok)
-        .orElse(ResponseEntity.notFound().build());
+        return resourceService.getResourceById(id)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
     }
     
+    // GET: Search and filter resources
     @GetMapping("/search")
     public ResponseEntity<List<Resource>> searchResources(
-        @RequestParam(required = false) String type,
-        @RequestParam(required = false) Integer minCapacity,
-        @RequestParam(required = false) String location,
-        @RequestParam(required = false) String status) {
-    
-    List<Resource> resources = resourceService.getAllResources().stream()
-        .filter(r -> type == null || r.getType().equalsIgnoreCase(type))
-        .filter(r -> minCapacity == null || r.getCapacity() >= minCapacity)
-        .filter(r -> location == null || r.getLocation().toLowerCase().contains(location.toLowerCase()))
-        .filter(r -> status == null || r.getStatus().equalsIgnoreCase(status))
-        .toList();
-    
-    return ResponseEntity.ok(resources);
-}
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) Integer minCapacity,
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) String status) {
+        
+        List<Resource> resources = resourceService.getAllResources().stream()
+            .filter(r -> type == null || type.isEmpty() || r.getType().equalsIgnoreCase(type))
+            .filter(r -> minCapacity == null || r.getCapacity() >= minCapacity)
+            .filter(r -> location == null || location.isEmpty() || r.getLocation().toLowerCase().contains(location.toLowerCase()))
+            .filter(r -> status == null || status.isEmpty() || r.getStatus().equalsIgnoreCase(status))
+            .toList();
+        
+        return ResponseEntity.ok(resources);
+    }
+
+    // GET: Retrieve all resources (optionally by type)
     @GetMapping
     public ResponseEntity<List<Resource>> getAllResources(@RequestParam(required = false) String type) {
         List<Resource> resources;
@@ -58,6 +63,7 @@ public class ResourceController {
         return ResponseEntity.ok(resources);
     }
 
+    // PUT: Update an existing resource
     @PutMapping("/{id}")
     public ResponseEntity<Resource> updateResource(@PathVariable Long id, @RequestBody Resource resourceDetails) {
         Optional<Resource> existingResource = resourceService.getResourceById(id);
@@ -78,7 +84,7 @@ public class ResourceController {
         }
     }
 
-
+    // DELETE: Remove a resource
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteResource(@PathVariable Long id) {
         Optional<Resource> existingResource = resourceService.getResourceById(id);
