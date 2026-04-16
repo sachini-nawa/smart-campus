@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
-import ResourceCatalogue from './components/Catalogue/ResourceCatalogue';
-import ResourceModal from './components/Catalogue/ResourceModal';
-import './App.css';
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+
+import ResourcesPage from "./pages/ResourcesPage";
+import BookingsPage from "./pages/BookingsPage";
+import TicketsPage from "./pages/TicketsPage";
+import OAuthSuccess from "./pages/OAuthSuccess";
+
+import ResourceCatalogue from "./components/Catalogue/ResourceCatalogue";
+import ResourceModal from "./components/Catalogue/ResourceModal";
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,49 +25,50 @@ function App() {
   };
 
   const handleSave = () => {
-    // Trigger a refresh of the catalogue
-    setRefreshTrigger(prev => prev + 1);
+    setRefreshTrigger((prev) => prev + 1);
   };
 
   return (
-    <div className="app-main">
-      <nav className="navbar">
-        <div className="nav-container">
-          <div className="logo-section">
-            <span className="logo-icon">🏢</span>
-            <span className="logo-text">SmartCampus</span>
-          </div>
-          <div className="nav-links">
-            <a href="#" className="active">Catalogue</a>
-            <a href="#">Bookings</a>
-            <a href="#">Maintenance</a>
-          </div>
-          <div className="user-profile">
-            <div className="user-avatar">AD</div>
-            <span>Admin</span>
-          </div>
-        </div>
-      </nav>
+    <Router>
+      <div style={{ padding: "20px", fontFamily: "Arial" }}>
+        <h1>Smart Campus Operations Hub</h1>
 
-      <main className="content-area">
-        <ResourceCatalogue 
-          key={refreshTrigger}
-          onAdd={handleAdd} 
-          onEdit={handleEdit} 
+        {/* Navigation */}
+        <nav style={{ marginBottom: "20px" }}>
+          <Link to="/" style={{ marginRight: "15px" }}>Resources</Link>
+          <Link to="/bookings" style={{ marginRight: "15px" }}>Bookings</Link>
+          <Link to="/tickets" style={{ marginRight: "15px" }}>Tickets</Link>
+        </nav>
+
+        {/* Routes */}
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <ResourceCatalogue
+                key={refreshTrigger}
+                onAdd={handleAdd}
+                onEdit={handleEdit}
+              />
+            }
+          />
+
+          <Route path="/bookings" element={<BookingsPage />} />
+          <Route path="/tickets" element={<TicketsPage />} />
+
+          {/* OAuth callback route */}
+          <Route path="/oauth-success" element={<OAuthSuccess />} />
+        </Routes>
+
+        {/* Modal (used by catalogue) */}
+        <ResourceModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          resource={selectedResource}
+          onSave={handleSave}
         />
-      </main>
-
-      <ResourceModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        resource={selectedResource}
-        onSave={handleSave}
-      />
-
-      <footer className="footer">
-        <p>&copy; 2026 Smart Campus Operations Hub • Member 1 - Facilities & Assets Catalogue</p>
-      </footer>
-    </div>
+      </div>
+    </Router>
   );
 }
 
