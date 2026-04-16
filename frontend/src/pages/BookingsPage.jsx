@@ -1,100 +1,103 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useState } from "react";
+import "../components/BookingForm.css"; // adjust path if needed
 
 function BookingsPage() {
-  const [bookings, setBookings] = useState([]);
   const [form, setForm] = useState({
-    resourceId: "",
-    requestedBy: "",
-    bookingDate: "",
+    name: "",
+    studentId: "",
+    email: "",
+    resource: "",
+    date: "",
     startTime: "",
     endTime: "",
     purpose: "",
-    expectedAttendees: "",
+    attendees: ""
   });
 
-  const fetchBookings = async () => {
-    const res = await axios.get("http://localhost:8080/api/bookings");
-    setBookings(res.data);
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value
+    });
   };
 
-  useEffect(() => {
-    fetchBookings();
-  }, []);
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    await axios.post("http://localhost:8080/api/bookings", {
-      resource: { id: Number(form.resourceId) },
-      requestedBy: form.requestedBy,
-      bookingDate: form.bookingDate,
-      startTime: form.startTime + ":00",
-      endTime: form.endTime + ":00",
-      purpose: form.purpose,
-      expectedAttendees: Number(form.expectedAttendees),
-    });
-    setForm({
-      resourceId: "",
-      requestedBy: "",
-      bookingDate: "",
-      startTime: "",
-      endTime: "",
-      purpose: "",
-      expectedAttendees: "",
-    });
-    fetchBookings();
+
+    alert(
+      "Booking Successful ✅\n" +
+      "Name: " + form.name + "\n" +
+      "Resource: " + form.resource
+    );
+
+    console.log("Booking Data:", form);
   };
 
   return (
-    <div>
-      <h2>Bookings</h2>
+    <div className="page">
+      <div className="card">
 
-      <form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
-        <input
-          placeholder="Resource ID"
-          value={form.resourceId}
-          onChange={(e) => setForm({ ...form, resourceId: e.target.value })}
-        />
-        <input
-          placeholder="Requested By"
-          value={form.requestedBy}
-          onChange={(e) => setForm({ ...form, requestedBy: e.target.value })}
-        />
-        <input
-          type="date"
-          value={form.bookingDate}
-          onChange={(e) => setForm({ ...form, bookingDate: e.target.value })}
-        />
-        <input
-          type="time"
-          value={form.startTime}
-          onChange={(e) => setForm({ ...form, startTime: e.target.value })}
-        />
-        <input
-          type="time"
-          value={form.endTime}
-          onChange={(e) => setForm({ ...form, endTime: e.target.value })}
-        />
-        <input
-          placeholder="Purpose"
-          value={form.purpose}
-          onChange={(e) => setForm({ ...form, purpose: e.target.value })}
-        />
-        <input
-          placeholder="Expected Attendees"
-          value={form.expectedAttendees}
-          onChange={(e) => setForm({ ...form, expectedAttendees: e.target.value })}
-        />
-        <button type="submit">Create Booking</button>
-      </form>
+        <h1 className="title">🏫 SmartCampus Booking System</h1>
+        <p className="subtitle">Book your resources easily and efficiently</p>
 
-      <ul>
-        {bookings.map((booking) => (
-          <li key={booking.id}>
-            Resource {booking.resource?.id} - {booking.requestedBy} - {booking.bookingDate} - {booking.status}
-          </li>
-        ))}
-      </ul>
+        <form onSubmit={handleSubmit} className="form">
+
+          {/* WHO */}
+          <h3>👤 Who is booking</h3>
+
+          <div className="grid">
+            <input name="name" placeholder="Full Name" onChange={handleChange} required />
+            <input name="studentId" placeholder="Student ID" onChange={handleChange} required />
+          </div>
+
+          <input name="email" placeholder="Email" onChange={handleChange} required />
+
+          {/* WHAT */}
+          <h3>🏢 What is being booked</h3>
+
+          <select name="resource" onChange={handleChange} required>
+            <option value="">Select Resource</option>
+            <option>Lecture Hall</option>
+            <option>Computer Lab</option>
+            <option>Meeting Room</option>
+            <option>Auditorium</option>
+          </select>
+
+          {/* WHEN */}
+          <h3>📅 When</h3>
+
+          <input type="date" name="date" onChange={handleChange} required />
+
+          <div className="grid">
+            <input type="time" name="startTime" onChange={handleChange} required />
+            <input type="time" name="endTime" onChange={handleChange} required />
+          </div>
+
+          {/* PURPOSE */}
+          <h3>🎯 Purpose</h3>
+
+          <textarea
+            name="purpose"
+            placeholder="Why are you booking this resource?"
+            onChange={handleChange}
+            required
+          />
+
+          {/* ATTENDEES */}
+          <h3>👥 Attendees</h3>
+
+          <input
+            type="number"
+            name="attendees"
+            placeholder="Number of people"
+            onChange={handleChange}
+            required
+          />
+
+          <button type="submit">📌 Book Now</button>
+
+        </form>
+      </div>
     </div>
   );
 }
