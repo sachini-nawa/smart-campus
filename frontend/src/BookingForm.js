@@ -1,71 +1,119 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
+import "./BookingForm.css";
 
 
 function BookingForm() {
-
   const [form, setForm] = useState({
-    resourceName: "",
+    name: "",
+    studentId: "",
+    email: "",
+    resource: "",
     date: "",
     startTime: "",
     endTime: "",
-    userName: ""
+    purpose: "",
+    attendees: ""
   });
 
   const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
-    });
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = () => {
-    alert("Booking Submitted!");
-    console.log(form);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    alert(
+      "Booking Successful ✅\n" +
+      "Name: " + form.name + "\n" +
+      "Resource: " + form.resource
+    );
+
+    console.log("Booking Data:", form);
   };
 
   return (
-    <div style={{ marginTop: "20px" }}>
-      <h2>Book a Resource</h2>
+    <div className="page">
+      <div className="card">
 
-      <input
-        name="resourceName"
-        placeholder="Room Name"
-        onChange={handleChange}
-      />
-      <br /><br />
+        <h1 className="title">🏫 SmartCampus Booking System</h1>
+        <p className="subtitle">Book your resources easily and efficiently</p>
 
-      <input
-        type="date"
-        name="date"
-        onChange={handleChange}
-      />
-      <br /><br />
+        <form onSubmit={handleSubmit} className="form">
 
-      <input
-        type="time"
-        name="startTime"
-        onChange={handleChange}
-      />
-      <br /><br />
+          {/* WHO */}
+          <h3>👤 Who is booking</h3>
 
-      <input
-        type="time"
-        name="endTime"
-        onChange={handleChange}
-      />
-      <br /><br />
+          <div className="grid">
+            <input
+              name="name"
+              placeholder="Full Name"
+              onChange={handleChange}
+              required
+            />
 
-      <input
-        name="userName"
-        placeholder="Your Name"
-        onChange={handleChange}
-      />
-      <br /><br />
+            <input
+              name="studentId"
+              placeholder="Student ID"
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-      <button onClick={handleSubmit}>
-        Book Now
-      </button>
+          <input
+            name="email"
+            placeholder="Email"
+            onChange={handleChange}
+            required
+          />
+
+          {/* WHAT */}
+          <h3>🏢 What is being booked</h3>
+
+          <select name="resource" onChange={handleChange} required>
+            <option value="">Select Resource</option>
+            <option>Lecture Hall</option>
+            <option>Computer Lab</option>
+            <option>Meeting Room</option>
+            <option>Auditorium</option>
+          </select>
+
+          {/* WHEN */}
+          <h3>📅 When</h3>
+
+          <input type="date" name="date" onChange={handleChange} required />
+
+          <div className="grid">
+            <input type="time" name="startTime" onChange={handleChange} required />
+            <input type="time" name="endTime" onChange={handleChange} required />
+          </div>
+
+          {/* PURPOSE */}
+          <h3>🎯 Purpose</h3>
+
+          <textarea
+            name="purpose"
+            placeholder="Why are you booking this resource?"
+            onChange={handleChange}
+            required
+          />
+
+          {/* ATTENDEES */}
+          <h3>👥 Attendees</h3>
+
+          <input
+            type="number"
+            name="attendees"
+            placeholder="Number of people"
+            onChange={handleChange}
+            required
+          />
+
+          {/* BUTTON */}
+          <button type="submit">📌 Book Now</button>
+
+        </form>
+      </div>
     </div>
   );
 }
