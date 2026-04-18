@@ -104,7 +104,7 @@ const ResourceModal = ({ isOpen, onClose, resource, onSave }) => {
               value={formData.location} 
               onChange={handleChange} 
               required 
-              placeholder="e.g. Block A, 2nd Floor"
+              placeholder="e.g. Block G, 2nd Floor"
             />
           </div>
 
